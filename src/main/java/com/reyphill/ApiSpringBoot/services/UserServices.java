@@ -8,6 +8,6 @@ public interface UserServices {
     UserResponseDto insertUser (UserRequestDto dto);
     List<UserResponseDto> listUser();
     UserResponseDto getUserById(int id);
-    UserResponseDto updateUser(int id, UserResponseDto responseDto);
+    UserResponseDto updateUser(int id, UserRequestDto responseDto);
     void deleteUser(int id);
 }
