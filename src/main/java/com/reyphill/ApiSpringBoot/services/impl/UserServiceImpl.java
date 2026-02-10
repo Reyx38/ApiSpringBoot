@@ -1,9 +1,8 @@
 package com.reyphill.ApiSpringBoot.services.impl;
 
-
-
 import com.reyphill.ApiSpringBoot.dto.user.UserRequestDto;
 import com.reyphill.ApiSpringBoot.dto.user.UserResponseDto;
+import com.reyphill.ApiSpringBoot.exception.ResourceNotFoundException;
 import com.reyphill.ApiSpringBoot.mappers.UserMappers;
 import com.reyphill.ApiSpringBoot.models.User;
 import com.reyphill.ApiSpringBoot.repository.UserRepository;
@@ -44,12 +43,25 @@ public class UserServiceImpl implements UserServices {
     }
 
     @Override
-    public UserResponseDto updateUser(int id, UserResponseDto responseDto) {
-        return null;
+    public UserResponseDto updateUser(int id, UserRequestDto requestDto) {
+        User user = usuarioRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Don't exist an user with Id: " + id )
+                        );
+
+        user.setNombre(requestDto.getNombre());
+        user.setEdad(requestDto.getEdad());
+        user.setEmail(requestDto.getEmail());
+
+        User updateUser = usuarioRepository.save(user);
+        return UserMappers.toDto(updateUser);
     }
 
     @Override
     public void deleteUser(int id) {
+        if (!usuarioRepository.existsById(id))
+            throw new ResourceNotFoundException("Don't exist an user with Id: " + id);
 
+        usuarioRepository.deleteById(id);
     }
 }
